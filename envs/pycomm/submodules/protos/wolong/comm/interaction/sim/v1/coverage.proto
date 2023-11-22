@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package wolong.comm.interaction.sim.v1;
+
+message CoverageAction {
+  int32 id = 1;
+  //天线方位角（度）
+  double bs_azi = 2;
+  //天线倾角（度）
+  double bs_tilt = 3;
+  //方位波束宽度（度）
+  double bw_azi = 4;
+  //倾斜波束宽度（度）
+  double bw_tilt = 5;
+}
+
+message CoverageReward {
+  bool coverage = 1;
+  double mean_rate = 2;
+}
+
+message BsState {
+  // 所有基站信号强度
+  repeated double signals = 1;
+  // 用户数量
+  int32 user_number = 2;
+  // 是否室内
+  bool is_indoor = 3;
+}
+
+message GridInfo {
+  // 网格id
+  int32 id = 1;
+  // 状态
+  BsState state = 2;
+  // 激励
+  CoverageReward reward = 3;
+}

@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package wolong.comm.input.v1;
+
+import "wolong/config/v1/config.proto";
+
+message Log { string level = 1; }
+
+message Mongo {
+  string uri = 1;
+  wolong.config.v1.MongoPath map = 2;
+  optional wolong.config.v1.MongoPath comm_topo = 3;
+  optional wolong.config.v1.MongoPath comm_demand = 4;
+  optional wolong.config.v1.MongoPath ray_tracing_loss = 5;
+}
+
+message ControlStep {
+  int32 start = 1;
+  int32 total = 2;
+  double interval = 3;
+}
+
+message ControlThread { int32 worker = 1; }
+
+message ControlOutput {
+  double min_longitude = 1;
+  double min_latitude = 2;
+  double max_longitude = 3;
+  double max_latitude = 4;
+}
+
+enum ChannelType {
+  CHANNEL_TYPE_UNSPECIFIED = 0;
+  CHANNEL_TYPE_EQUATION = 1;
+  CHANNEL_TYPE_RAY_TRACING = 2;
+  CHANNEL_TYPE_3GPP = 3;
+  CHANNEL_TYPE_FREESPACE = 4;
+}
+
+enum AntennaType {
+  ANTENNA_TYPE_UNSPECIFIED = 0;
+  ANTENNA_TYPE_SISO = 1;
+  ANTENNA_TYPE_MIMO = 2;
+}
+
+
+message Control {
+  ControlStep step = 1;
+  ControlThread thread = 2;
+  // 微观区域范围
+  ControlOutput microscopic_range = 3;
+  // 宏观区域范围
+  ControlOutput macroscopic_range = 4;
+  // 模拟器是否使用外部控制
+  bool enable_controlled = 10;
+  // 通信是否使用优化分配
+  bool enable_optimize = 5;
+  // 通信优化分配间隔步数
+  optional int32 optimize_interval = 6;
+  // 是否展示微观区域
+  bool display_guomao = 7;
+  // 基站初始化覆盖网格长度（单位：米）
+  double coverage_range = 8;
+  // 基站切换频率(单位:秒)
+  int32 handover_interval = 9;
+  //信道模型
+  ChannelType channel_type = 11;
+  // 天线类型
+  AntennaType antenna_type = 12;
+}
+
+// 是否输出各类数据
+message OutputSwitch {
+  bool person = 1;
+  bool base_station = 2;
+  bool aoi = 3;
+  bool heatmap = 4;
+  bool stats = 5;
+}
+
+message Output {
+  // 统一的输出目标
+  wolong.config.v1.OutputTarget target = 1;
+  OutputSwitch switch = 2;
+}
+
+message Config {
+  Log log = 1;
+  Mongo mongo = 2;
+  Control control = 3;
+  Output output = 4;
+}

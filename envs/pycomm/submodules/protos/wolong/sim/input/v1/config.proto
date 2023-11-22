@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package wolong.sim.input.v1;
+
+import "wolong/config/v1/config.proto";
+
+message Log { string level = 1; }
+
+message Mongo {
+  string uri = 1;
+  wolong.config.v1.MongoPath map = 2;
+  optional wolong.config.v1.MongoPath traffic_light = 3;
+  wolong.config.v1.MongoPath person = 5;
+  optional wolong.config.v1.MongoPath thing = 6;
+  optional wolong.config.v1.MongoPath traffic_police_station = 8;
+  optional wolong.config.v1.MongoPath base_station = 7;
+  optional wolong.config.v1.MongoPath comm_demand = 9;
+  optional wolong.config.v1.MongoPath ray_tracing_loss = 10;
+}
+
+message ControlStep {
+  int32 start = 1;
+  int32 total = 2;
+  double interval = 3;
+}
+
+message ControlThread { int32 worker = 1; }
+
+message ControlOutput {
+  double min_longitude = 1;
+  double min_latitude = 2;
+  double max_longitude = 3;
+  double max_latitude = 4;
+}
+
+message Control {
+  ControlStep step = 1;
+  ControlThread thread = 2;
+  // 微观区域范围
+  ControlOutput microscopic_range = 3;
+  // 启动车辆通过路口重新导航机制
+  bool vehicle_reroute = 5;
+  // 启动通信模拟
+  bool enable_comm = 6;
+  // 启动室内模拟
+  bool enable_indoor = 7;
+  // 通信优化间隔步数
+  int32 optimize_interval = 8;
+}
+
+// 是否输出各类数据
+message OutputSwitch {
+  bool vehicle = 1;
+  bool person = 2;
+  bool traffic_light = 3;
+  bool road = 4;
+  bool aoi = 5;
+  bool restricted_lane = 6;
+  bool event = 7;
+  bool comm = 8;
+}
+
+message Output {
+  // 统一的输出目标
+  wolong.config.v1.OutputTarget target = 1;
+  OutputSwitch switch = 2;
+}
+
+message Config {
+  Log log = 1;
+  Mongo mongo = 2;
+  Control control = 3;
+  Output output = 4;
+}

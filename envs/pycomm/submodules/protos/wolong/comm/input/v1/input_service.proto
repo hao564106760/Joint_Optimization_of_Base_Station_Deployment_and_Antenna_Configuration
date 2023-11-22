@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package wolong.comm.input.v1;
+import "wolong/map/v2/map.proto";
+import "wolong/comm/input/v1/config.proto";
+import "wolong/comm/input/v1/comm.proto";
+
+service InputService {
+  rpc Init(InitRequest) returns (InitResponse) {}
+}
+
+message InitRequest {}
+
+message InitResponse {
+  // 日志配置
+  Log log = 1;
+  // 控制配置
+  Control control = 2;
+  // 模拟器gRPC监听地址
+  string sim_address = 3;
+
+  // 数据
+  // 地图
+  wolong.map.v2.Map map = 4;
+  // 通信拓扑
+  wolong.comm.input.v1.Nodes comm_topo = 5;
+  // 通信用户需求
+  wolong.comm.input.v1.CommDemands comm_demands = 6;
+  wolong.comm.input.v1.RayTracingLosses ray_tracing_losses = 7;
+  // 输出配置
+  OutputSwitch output_switch = 8;
+}

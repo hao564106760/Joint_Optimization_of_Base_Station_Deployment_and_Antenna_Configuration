@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package wolong.comm.interaction.sim.v1;
+
+import "wolong/geo/v2/geo.proto";
+
+message Allocation {
+  int32 base_station_id = 1;
+  int32 channel_id = 2;
+  double power = 3;
+}
+
+message DynamicAction {
+  int32 id = 1;
+  repeated Allocation actions = 2;
+}
+
+message DynamicReward {
+  double flow = 1;
+  double satisfied_flow = 2;
+}
+
+// 用户状态
+message PersonState {
+  // 用户地理位置
+  wolong.geo.v2.XYPosition xy_position = 1;
+  // 用户通信需求
+  double demand = 2;
+  // 已满足需求
+  double satisfied_flow = 4;
+}
+
+message PersonInfo {
+  // 用户id
+  int32 id = 1;
+  // 状态
+  PersonState state = 2;
+  // 激励
+  DynamicReward reward = 3;
+}

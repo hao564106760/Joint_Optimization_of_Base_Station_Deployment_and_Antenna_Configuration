@@ -1,0 +1,164 @@
+syntax = "proto3";
+
+package wolong.comm.output.v1;
+
+// 基站负荷状态
+enum BaseStationLoadStatus {
+  BASE_STATION_LOAD_STATUS_UNSPECIFIED = 0;
+  // 高负荷(信道占用比>0.8)
+  BASE_STATION_LOAD_STATUS_HIGH = 1;
+  // 正常
+  BASE_STATION_LOAD_STATUS_OK = 2;
+  // 低负荷(信道占用比<0.2)
+  BASE_STATION_LOAD_STATUS_LOW = 3;
+}
+
+// 基站状态
+message BaseStation {
+  int32 id = 1;
+  // 基站需求流量（单位：Bytes, 按秒记）
+  double demand_flow = 2;
+  // 基站承载流量（单位：Bytes，按秒记）
+  double actual_flow = 3;
+  // 基站用户数
+  int32 num_agents = 4;
+  // 不满足通信需求用户数
+  int32 unsatisfied_num = 5;
+  // 满足通信需求用户数
+  int32 satisfied_num = 6;
+  // 通信中断用户数
+  int32 outage_num = 7;
+  // 基站平均发射功率(单位：dBm)
+  // 使用信道的发射功率取平均
+  double transmit_power = 8;
+  // 基站信道占用比
+  double resource_block_ratio = 9;
+  // 基站能效(单位：Bit/J) (承载流量/发射功率)
+  double energy_efficiency = 10;
+  BaseStationLoadStatus load_status = 11;
+  // 用户平均通信速率（单位：Bytes/s)
+  double rate_comm = 12;
+  // 基站频段
+  int32 freq_range_id = 13;
+  // 基站能耗（单位：J)
+  double power_consumption = 14;
+}
+
+message Aoi {
+  int32 id = 1;
+  // 通信需求总量（单位：Bytes）
+  double demand_flow = 2;
+  // 通信真实总量（单位：Bytes）
+  double actual_flow = 3;
+  // aoi用户数
+  int32 num_agents = 4;
+  // 通信中断人数
+  int32 outage_num = 5;
+  // 通信满足人数
+  int32 satisfied_num = 6;
+  // 通信不满足人数
+  int32 unsatisfied_num = 7;
+  // 有通信需求的人数
+  int32 active_user_num = 8;
+}
+
+// 网格内信号与通信速率情况
+message Heatmap {
+  int32 num_rows = 1;
+  int32 num_columns = 2;
+  // 信号强度（单位：dBm）
+  repeated double strength = 3;
+  // 基站ID
+  repeated int32 base_station_id = 4;
+  // 基站频段
+  repeated int32 freq_range_id = 5;
+  // 用户通信速率(B/s)
+  repeated double rate = 6;
+  // 不满足比例(不满足用户数/总用户数)
+  repeated double unsatisfied_ratio = 7;
+}
+
+enum PersonType {
+  PERSON_TYPE_UNSPECIFIED = 0;
+  // 车辆
+  PERSON_TYPE_VEHICLE = 1;
+  // 行人
+  PERSON_TYPE_PEDESTRIAN = 2;
+}
+
+// 用户连接基站状态
+enum PersonConnectStatus {
+  PERSON_CONNECT_STATUS_UNSPECIFIED = 0;
+  // 可以连接到基站
+  PERSON_CONNECT_STATUS_OK = 1;
+  // 无法连接到基站
+  PERSON_CONNECT_STATUS_OUTAGE = 2;
+}
+
+// 用户需求满足状态
+enum PersonDemandStatus {
+  PERSON_DEMAND_STATUS_UNSPECIFIED = 0;
+  // 需求被满足
+  PERSON_DEMAND_STATUS_SATISFIED = 1;
+  // 需求不满足
+  PERSON_DEMAND_STATUS_UNSATISFIED = 2;
+  // 没有需求
+  PERSON_DEMAND_STATUS_NO = 3;
+}
+
+// 人（可见的，交通模拟或室内模拟正在计算位置变动的）
+message Person {
+  int32 id = 1;
+  // 通信需求速率（单位：Bytes/s）
+  double demand_rate = 2;
+  // 通信真实速率（单位：Bytes/s）
+  double actual_rate = 3;
+  PersonConnectStatus connect_status = 4;
+  PersonDemandStatus demand_status = 5;
+  // 连接基站
+
+  // 信号强度（单位：dBm）
+  double strength = 6;
+
+  int32 base_station_id = 7;
+  // 信道分配
+  repeated int32 freq_range_ids = 8;
+  // 接收发射功率（单位：dBm）
+  double received_power = 9;
+  // 用户占用信道数
+  int32 num_channels = 10;
+  // 通信需求流量（单位：Bytes）
+  double demand_flow = 11;
+  // 通信真实流量（单位：Bytes）
+  double actual_flow = 12;
+  PersonType person_type = 13;
+}
+
+message Statistics {
+  // 总用户数
+  int32 num_agent = 1;
+  // 满足通信需求用户数
+  int32 num_satisfied_agent = 2;
+  // 未能满足通信需求的用户数
+  int32 num_unsatisfied_agent = 3;
+  // 通信中断的用户数
+  int32 num_outage_agent = 4;
+  // 有通信需求的用户数
+  int32 num_active_agent = 5;
+  // 连接到基站用户数
+  int32 num_connect_agent = 6;
+  // 需求总流量（单位：Bytes）
+  double demand_flow = 7;
+  // 真实总流量（单位：Bytes）
+  double actual_flow = 8;
+  // 总基站数
+  int32 num_base_station = 9;
+  // 高负荷基站数
+  int32 num_high_load_base_station = 10;
+  // 正常基站数
+  int32 num_ok_load_base_station = 11;
+  // 低负荷基站数
+  int32 num_low_load_base_station = 12;
+  // 基站耗电量(单位：kW·h)
+  double power_consumption = 13;
+}

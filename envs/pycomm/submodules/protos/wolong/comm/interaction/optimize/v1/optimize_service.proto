@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package wolong.comm.interaction.optimize.v1;
+
+import "wolong/geo/v2/geo.proto";
+
+service OptimizeService {
+  rpc OptimizeStatus(OptimizeStatusRequest) returns (OptimizeStatusResponse);
+  rpc OptimizeParameter(OptimizeParameterRequest)
+      returns (OptimizeParameterResponse);
+}
+
+// 用户地理位置与通信需求
+message PersonDemand {
+  // 用户ID
+  int32 id = 1;
+  // 用户地理位置
+  wolong.geo.v2.XYPosition xy_position = 2;
+  // 用户通信需求
+  double demand = 3;
+}
+
+message OptimizeParameterRequest { repeated PersonDemand person_demands = 1; }
+
+message AllocateBaseStation {
+  int32 base_station_id = 1;
+  int32 channel_id = 2;
+  double power = 3;
+}
+
+message PersonAllocateBaseStations {
+  // 用户ID
+  int32 id = 1;
+  // 用户分配基站信息
+  repeated AllocateBaseStation allocate_base_stations = 2;}
+
+// 在需求较大情况下，将用户需求切分
+// 每个需求优化得到对应基站，信道，功率
+message OptimizeParameterResponse {
+  repeated PersonAllocateBaseStations persons_allocate_base_stations = 1;
+}
+
+message OptimizeStatusRequest {
+  // true为开启优化，false为关闭优化
+  bool status = 1;
+}
+
+message OptimizeStatusResponse {}

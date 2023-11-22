@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package wolong.comm.output.v1;
+import "wolong/comm/output/v1/output.proto";
+
+service OutputService { rpc Output(OutputRequest) returns (OutputResponse); }
+
+message OutputRequest {
+  int32 step = 1;
+  repeated BaseStation base_stations = 2;
+  repeated Aoi aois = 7;
+  // 五环区域信号强度热力图（500m网格形式呈现）
+  Heatmap heatmap = 3;
+  // 国贸区域信号强度热力图（50m网格形式呈现）
+  Heatmap small_heatmap = 4;
+  // TODO(张钧): 基站和人的连接怎么表示？
+  // 人相关的数据
+  repeated Person persons = 5;
+  // 统计值
+  Statistics statistics = 6;
+}
+
+message OutputResponse {}

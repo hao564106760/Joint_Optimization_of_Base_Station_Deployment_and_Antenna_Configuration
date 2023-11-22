@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package wolong.comm.interaction.sim.v1;
+
+import "wolong/comm/input/v1/config.proto";
+import "wolong/comm/interaction/sim/v1/coverage.proto";
+import "wolong/comm/interaction/sim/v1/dynamic.proto";
+
+service SimService { rpc Sim(SimRequest) returns (SimResponse); }
+
+message Control {
+  wolong.comm.input.v1.ControlStep step = 1;
+  optional int32 optimize_interval = 2;
+  // 展示宏微观区域
+  bool display_guomao = 3;
+  // 初始化划分网格长度（单位：米）
+  double coverage_range = 4;
+  // 基站切换频率（单位：秒）
+  int32 handover_interval = 5;
+  // 信道模型选择
+  wolong.comm.input.v1.ChannelType channel_type = 6;
+  // 天线模型选择
+  wolong.comm.input.v1.AntennaType antenna_type = 7;
+}
+
+enum OptimizeType {
+  OPTIMIZE_TYPE_UNSPECIFIED = 0;
+  OPTIMIZE_TYPE_DYNAMIC = 1;
+  OPTIMIZE_TYPE_COVERAGE = 2;
+}
+
+message SimRequest {
+  // 输出job名称
+  string job = 2;
+  // 优化类型
+  OptimizeType optimize_type = 3;
+  // 模拟器参数
+  Control control = 4;
+  // 输出（不设置则采用默认值）
+  optional wolong.comm.input.v1.Output output = 5;
+  // 策略
+  Action action = 6;
+}
+
+message SimResponse {
+  repeated GridInfo grids = 1;
+  repeated PersonInfo persons = 2;
+}
+
+message BsControl {
+  int32 base_id = 1;
+  // 最大发射功率
+  optional double max_power = 2;
+  // 基站频段id
+  optional int32 freq_range_id = 3;
+  // 方位角
+  optional double azimuth = 4;
+  // 下行角
+  optional double down_angle = 5;
+}
+
+message Action {
+  repeated CoverageAction coverages = 1;
+  repeated DynamicAction dynamics = 2;
+  // 基站参数
+  repeated BsControl base_controls = 3;
+}

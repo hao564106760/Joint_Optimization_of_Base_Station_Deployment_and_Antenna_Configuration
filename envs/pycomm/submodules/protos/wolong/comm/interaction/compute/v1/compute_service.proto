@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package wolong.comm.interaction.compute.v1;
+
+service ComputeService {
+  rpc ComputeFacilityPower(ComputeFacilityPowerRequest)
+      returns (ComputeFacilityPowerResponse);
+}
+
+// 基站历史功率
+message BaseStationPower {
+  int32 id = 1;
+  repeated double powers = 2;
+}
+
+message ComputeFacilityPowerRequest { repeated BaseStationPower powers = 1; }
+
+message FacilityPower {
+  int32 id = 1;
+  double facility_power = 2;
+}
+
+// 计算下一个时段空调能耗
+message ComputeFacilityPowerResponse {
+  repeated FacilityPower facility_powers = 1;
+}
